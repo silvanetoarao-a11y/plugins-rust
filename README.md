@@ -1,208 +1,355 @@
-# Plugin para Servidor Rust
+# 🎨 Item Skins - Plugin Completo de Skins para Rust
 
-Plugin completo e funcional para servidores de Rust usando uMod/Oxide ou Carbon.
+Plugin completo de gerenciamento de skins para **Rust Protocol 2388.237.1** (Maio/2023)
 
-## 📋 Sobre o Plugin
+## ✨ Funcionalidades
 
-O **WelcomePlugin** é um plugin versátil que adiciona várias funcionalidades úteis ao seu servidor de Rust:
+- 🎯 **Todas as skins do Rust** - Suporte para TODAS as skins oficiais e do Workshop
+- 🖼️ **UI Intuitiva** - Interface gráfica linda e fácil de usar
+- ⭐ **Sistema de Favoritos** - Salve suas skins preferidas
+- 🔄 **Skin Automática** - Aplique skins automaticamente em itens craftados
+- ⚡ **Performance** - Otimizado para servidores grandes
+- 🎨 **Customizável** - Configure cores, limites e permissões
+- 💾 **Dados Persistentes** - Favoritos salvos entre reinicializações
 
-- ✅ Sistema de boas-vindas personalizável
-- ✅ Comandos úteis para jogadores
-- ✅ Kit inicial para novos jogadores
-- ✅ Comandos administrativos
-- ✅ Sistema de configuração completo
-- ✅ Notificações de entrada/saída de jogadores
+---
 
-## 🚀 Instalação
+## 📥 Instalação
 
-### Requisitos
-- Servidor Rust
-- uMod (Oxide) ou Carbon instalado
-
-### Passo a Passo
-
-1. **Baixe o plugin**: Copie o arquivo `WelcomePlugin.cs`
-
-2. **Instale no servidor**: 
-   - Coloque o arquivo na pasta `oxide/plugins/` ou `carbon/plugins/`
-   - Caminho completo: `<pasta_do_servidor>/oxide/plugins/WelcomePlugin.cs`
-
-3. **Carregue o plugin**:
-   - O plugin será compilado e carregado automaticamente
-   - Ou use o comando console: `oxide.reload WelcomePlugin`
-
-4. **Configure o plugin**:
-   - Após o primeiro carregamento, um arquivo de configuração será criado em:
-   - `oxide/config/WelcomePlugin.json`
-
-## ⚙️ Configuração
-
-O arquivo de configuração (`WelcomePlugin.json`) contém as seguintes opções:
-
-```json
-{
-  "Mensagem de boas-vindas": "Bem-vindo ao servidor, {player}!",
-  "Mostrar mensagem no chat": true,
-  "Mostrar popup na tela": true,
-  "Tempo do popup (segundos)": 5.0,
-  "Prefix do chat": "[Servidor]",
-  "Cor do prefix (hex)": "#00FF00"
-}
+### 1. Download
+Copie o arquivo `ItemSkins.cs` para a pasta:
+```
+/oxide/plugins/ItemSkins.cs
 ```
 
-### Personalizando
+### 2. Carregar Plugin
+O plugin será compilado automaticamente, ou use:
+```
+oxide.reload ItemSkins
+```
 
-- `{player}` - Será substituído pelo nome do jogador
-- Cores em formato hexadecimal (ex: `#00FF00` para verde, `#FF0000` para vermelho)
-- Ajuste os tempos e mensagens conforme sua preferência
+### 3. Configuração (Opcional)
+Após o primeiro carregamento, edite:
+```
+/oxide/config/ItemSkins.json
+```
 
-## 📝 Comandos
+---
+
+## 🎮 Comandos
 
 ### Comandos para Jogadores
 
 | Comando | Descrição | Exemplo |
 |---------|-----------|---------|
-| `/ajuda` | Mostra todos os comandos disponíveis | `/ajuda` |
-| `/online` | Mostra quantos jogadores estão online | `/online` |
-| `/online lista` | Lista todos os jogadores online | `/online lista` |
-| `/regras` | Mostra as regras do servidor | `/regras` |
-| `/kit` | Recebe um kit inicial (apenas uma vez) | `/kit` |
-| `/pos` | Mostra sua posição atual no mapa | `/pos` |
+| `/skin` | Abre menu de skins do item na mão | `/skin` |
+| `/skins` | Mesmo que /skin | `/skins` |
+| `/skinid <ID>` | Aplica skin por ID | `/skinid 123456` |
+| `/removeskin` | Remove skin do item | `/removeskin` |
+| `/skinfav [ID]` | Adiciona/remove favorito | `/skinfav 123456` |
+| `/skinauto` | Define skin como padrão para crafts | `/skinauto` |
 
-### Comandos para Administradores
+### Como Usar
 
-| Comando | Descrição | Exemplo |
-|---------|-----------|---------|
-| `/heal` | Cura você completamente | `/heal` |
-| `/heal <jogador>` | Cura um jogador específico | `/heal Steve` |
+1. **Aplicar Skin Básico:**
+   - Segure um item na mão
+   - Digite `/skin`
+   - Clique na skin desejada
 
-### Comandos do Console
+2. **Aplicar Skin por ID:**
+   - Segure um item na mão
+   - Digite `/skinid 123456`
 
-| Comando | Descrição |
-|---------|-----------|
-| `welcomeplugin.reload` | Recarrega a configuração do plugin |
+3. **Favoritar Skin:**
+   - Abra o menu com `/skin`
+   - Clique na ⭐ (estrela) da skin
+   - Ou use `/skinfav 123456`
 
-## 🎁 Kit Inicial
-
-O kit inicial inclui:
-
-- 🪵 1000 Wood
-- 🪨 1000 Stone
-- ⚙️ 500 Metal Fragments
-- 🧵 100 Cloth
-- ⛏️ 1x Stone Pickaxe
-- 🪓 1x Hatchet
-- 🏹 1x Hunting Bow
-- ➡️ 50x Wooden Arrows
-- 🩹 5x Bandages
-
-**Nota**: Cada jogador pode receber o kit apenas uma vez.
-
-## 🎯 Funcionalidades
-
-### Eventos Automáticos
-
-1. **Jogador Conecta**:
-   - Mensagem de boas-vindas no chat (se ativado)
-   - Popup na tela do jogador (se ativado)
-   - Anuncia no chat que o jogador entrou
-
-2. **Jogador Desconecta**:
-   - Anuncia no chat que o jogador saiu
-
-3. **Jogador Renasce**:
-   - Mensagem de encorajamento
-
-### Permissões
-
-O plugin gerencia automaticamente as seguintes permissões:
-
-- `welcomeplugin.kit.received` - Marca que o jogador já recebeu o kit inicial
-
-## 🔧 Personalização
-
-### Modificar o Kit Inicial
-
-Edite a função `GiveStarterKit` no código:
-
-```csharp
-Dictionary<string, int> kitItems = new Dictionary<string, int>
-{
-    { "wood", 1000 },           // Nome do item, quantidade
-    { "stone", 1000 },
-    { "metal.fragments", 500 },
-    // Adicione mais itens aqui
-};
-```
-
-### Adicionar Mais Comandos
-
-Adicione novos comandos seguindo este padrão:
-
-```csharp
-[ChatCommand("meucomando")]
-private void MeuComando(BasePlayer player, string command, string[] args)
-{
-    SendReply(player, "Mensagem de resposta!");
-}
-```
-
-### Modificar Regras
-
-Edite a função `RulesCommand` para personalizar as regras do servidor.
-
-## 🐛 Solução de Problemas
-
-### Plugin não carrega
-
-1. Verifique se o arquivo está na pasta correta
-2. Verifique o console do servidor para erros de compilação
-3. Certifique-se de que o uMod/Oxide está atualizado
-
-### Configuração não funciona
-
-1. Delete o arquivo `WelcomePlugin.json` da pasta `oxide/config/`
-2. Recarregue o plugin: `oxide.reload WelcomePlugin`
-3. Um novo arquivo de configuração será criado
-
-### Kit não funciona
-
-- Verifique se os nomes dos itens estão corretos
-- Consulte a lista de itens do Rust: [rustlabs.com](https://rustlabs.com/)
-
-## 📜 Changelog
-
-### Versão 1.0.0
-- ✨ Lançamento inicial
-- ✅ Sistema de boas-vindas
-- ✅ Comandos básicos
-- ✅ Kit inicial
-- ✅ Comandos administrativos
-- ✅ Sistema de configuração
-
-## 📄 Licença
-
-Este plugin é de código aberto e pode ser modificado livremente para uso em seu servidor.
-
-## 🤝 Contribuições
-
-Sinta-se livre para modificar e melhorar este plugin! Sugestões de melhorias:
-
-- Sistema de teleporte
-- Sistema de economia
-- Proteção de áreas
-- Sistema de clãs
-- Eventos automáticos
-- Sistema de votação
-- Loja de itens
-
-## 📞 Suporte
-
-Para suporte adicional:
-- Consulte a documentação do uMod: [umod.org](https://umod.org/)
-- Fórum da comunidade Rust
-- Discord do servidor
+4. **Skin Automática em Crafts:**
+   - Aplique uma skin no item
+   - Digite `/skinauto`
+   - Todos os novos itens craftados terão essa skin!
 
 ---
 
-**Desenvolvido para a comunidade Rust** 🎮
+## ⚙️ Configuração
+
+### Arquivo: `oxide/config/ItemSkins.json`
+
+```json
+{
+  "Habilitado": true,
+  "Permitir todas as skins": true,
+  "Usar permissões": false,
+  "Limite de favoritos": 20,
+  "Mostrar IDs das skins": true,
+  "Cor do UI (RGBA)": "0.1 0.1 0.1 0.95",
+  "Cooldown entre mudanças (segundos)": 1.0
+}
+```
+
+### Explicação das Opções
+
+| Opção | Descrição | Padrão |
+|-------|-----------|--------|
+| `Habilitado` | Ativa/desativa o plugin | `true` |
+| `Permitir todas as skins` | Permite acesso a todas as skins | `true` |
+| `Usar permissões` | Requer permissões para usar | `false` |
+| `Limite de favoritos` | Máximo de favoritos por jogador | `20` |
+| `Mostrar IDs das skins` | Mostra ID nos botões | `true` |
+| `Cor do UI (RGBA)` | Cor de fundo da interface | Preto translúcido |
+| `Cooldown entre mudanças (segundos)` | Delay entre aplicações | `1.0` |
+
+---
+
+## 🔐 Permissões
+
+### Permissões Disponíveis
+
+| Permissão | Descrição |
+|-----------|-----------|
+| `itemskins.use` | Permite usar o plugin |
+| `itemskins.all` | Acesso total a todas as funcionalidades |
+| `itemskins.admin` | Permissões administrativas |
+
+### Como Dar Permissões
+
+```bash
+# Dar permissão a um jogador
+oxide.grant user <nome> itemskins.use
+
+# Dar permissão a um grupo
+oxide.grant group default itemskins.use
+
+# Dar todas as permissões
+oxide.grant user <nome> itemskins.all
+```
+
+### Remover Permissões
+
+```bash
+oxide.revoke user <nome> itemskins.use
+```
+
+---
+
+## 🎨 Interface do Usuário (UI)
+
+### Menu Principal
+
+```
+╔═══════════════════════════════════════════╗
+║     SKINS - AK47                          ║
+║     156 skins disponíveis                 ║
+╠═══════════════════════════════════════════╣
+║                                           ║
+║  ☆ 123  ☆ 456  ★ 789  ☆ 012  ☆ 345      ║
+║  ☆ 678  ☆ 901  ☆ 234  ☆ 567  ☆ 890      ║
+║  ... mais skins ...                       ║
+║                                           ║
+╠═══════════════════════════════════════════╣
+║ [Remover Skin]              [Fechar]     ║
+╚═══════════════════════════════════════════╝
+```
+
+- **☆** = Skin normal
+- **★** = Skin favoritada (dourada)
+- **Clique na estrela** = Adicionar/remover favorito
+- **Clique no número** = Aplicar skin
+
+---
+
+## 📊 Itens Suportados
+
+O plugin suporta **TODOS os itens** que possuem skins no Rust, incluindo:
+
+### Armas
+- AK47, LR-300, Thompson, MP5, Python, SAR, etc.
+- Espingardas, Arcos, Bestas
+- Granadas, C4, Explosivos
+
+### Ferramentas
+- Picareta, Machado, Foice
+- Martelo, Plano de Construção
+
+### Roupas
+- Hoodie, Calças, Botas
+- Capacete, Máscara, Roadsign
+
+### Portas & Construção
+- Portas de Metal, Madeira, Garagem
+- Sleeping Bags, Caixas, Fornalhas
+
+### Decoração
+- Placas, Banners, Rugs
+- Painéis, Cortinas
+
+---
+
+## 💡 Dicas e Truques
+
+### 1. Encontrar IDs de Skins
+- Abra o menu com `/skin`
+- Os IDs são mostrados nos botões
+- Anote os IDs das suas favoritas!
+
+### 2. Skins Automáticas
+```bash
+# Para sempre craftar AK47 com skin dourada:
+1. Crafte uma AK47
+2. Aplique a skin desejada
+3. Digite /skinauto
+4. Todas as próximas AK47 terão essa skin!
+```
+
+### 3. Gerenciar Favoritos
+```bash
+# Ver favoritos
+/skinfav
+
+# Adicionar favorito
+/skinfav 123456
+
+# Remover favorito (usar o mesmo comando)
+/skinfav 123456
+```
+
+### 4. Remover Todas as Skins
+```bash
+# Segurar item e usar:
+/removeskin
+```
+
+---
+
+## 🐛 Solução de Problemas
+
+### Comando não funciona
+**Problema:** `/skin` não faz nada
+
+**Soluções:**
+1. Verifique se está segurando um item
+2. Verifique permissões: `oxide.show perms itemskins`
+3. Recarregue: `oxide.reload ItemSkins`
+
+### Skin não aplica
+**Problema:** Skin não aparece no item
+
+**Soluções:**
+1. Verifique o cooldown (padrão 1 segundo)
+2. Verifique se a skin existe para aquele item
+3. Tente remover e reaplicar
+
+### UI não abre
+**Problema:** Menu não aparece
+
+**Soluções:**
+1. Verifique se o item tem skins disponíveis
+2. Recarregue o plugin: `oxide.reload ItemSkins`
+3. Verifique erros no console: `oxide.show errors`
+
+### Favoritos não salvam
+**Problema:** Favoritos desaparecem após reiniciar
+
+**Soluções:**
+1. Verifique permissões de escrita da pasta `oxide/data/`
+2. Procure o arquivo: `oxide/data/ItemSkins_Data.json`
+3. Se não existir, há problema de permissões
+
+---
+
+## 📈 Performance
+
+### Otimizações Incluídas
+
+- ✅ Cache de skins em memória
+- ✅ Carregamento assíncrono
+- ✅ Cooldown para prevenir spam
+- ✅ Limpeza automática de UI ao desconectar
+- ✅ Dados salvos apenas quando necessário
+
+### Recomendações
+
+- **Cooldown:** Mínimo 0.5s para servidores grandes
+- **Favoritos:** Limite de 20-50 para melhor performance
+- **UI:** Fecha automaticamente ao desconectar
+
+---
+
+## 🔄 Compatibilidade
+
+### Versão do Rust
+- ✅ Protocol: **2388.237.1**
+- ✅ Build Date: **05/04/2023**
+- ✅ Compatível com versões similares
+
+### Requisitos
+- ✅ Oxide/uMod instalado
+- ✅ C# 6.0 (padrão do Oxide)
+- ✅ Rust Server atualizado
+
+### Plugins Compatíveis
+- ✅ Economics
+- ✅ ServerRewards
+- ✅ Kits
+- ✅ Clans
+- ✅ Backpacks
+
+---
+
+## 📝 Changelog
+
+### Versão 1.0.0
+- ✨ Lançamento inicial
+- ✅ Suporte a todas as skins oficiais
+- ✅ Suporte a skins do Workshop
+- ✅ Sistema de favoritos
+- ✅ Skins automáticas em crafts
+- ✅ UI completa e intuitiva
+- ✅ Sistema de permissões
+- ✅ Configuração customizável
+- ✅ Dados persistentes
+
+---
+
+## 🆘 Suporte
+
+### Problemas Comuns
+
+**Q: Posso usar skins premium?**  
+A: Sim! Todas as skins aprovadas do Workshop são suportadas.
+
+**Q: As skins funcionam em PvP?**  
+A: Sim, são apenas visuais e não afetam o gameplay.
+
+**Q: Posso restringir certas skins?**  
+A: Use o sistema de permissões para controlar acesso.
+
+**Q: Funciona com itens customizados de outros plugins?**  
+A: Depende do plugin, mas geralmente sim.
+
+---
+
+## 📞 Recursos Adicionais
+
+- 📖 [Documentação Oxide](https://umod.org/documentation)
+- 🎮 [Lista de IDs de Skins](https://rustlabs.com/skins)
+- 💬 [Comunidade Rust Brasil](https://discord.gg/rust)
+- 🔧 [API do Rust](https://developer.valvesoftware.com/wiki/Rust)
+
+---
+
+## 📄 Licença
+
+Este plugin é de código aberto e pode ser modificado livremente.
+
+---
+
+## 🎉 Pronto para Usar!
+
+1. ✅ Copie `ItemSkins.cs` para `oxide/plugins/`
+2. ✅ Configure em `oxide/config/ItemSkins.json`
+3. ✅ Dê permissões aos jogadores
+4. ✅ Divirta-se com as skins!
+
+**Desenvolvido com ❤️ para a comunidade Rust brasileira!** 🇧🇷🎮

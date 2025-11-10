@@ -1,0 +1,9 @@
+{
+  "Habilitado": true,
+  "Permitir todas as skins": true,
+  "Usar permissões": false,
+  "Limite de favoritos": 20,
+  "Mostrar IDs das skins": true,
+  "Cor do UI (RGBA)": "0.1 0.1 0.1 0.95",
+  "Cooldown entre mudanças (segundos)": 1.0
+}

@@ -9,8 +9,8 @@ using Newtonsoft.Json;
 
 namespace Oxide.Plugins
 {
-    [Info("Item Skins", "YourName", "1.3.0")]
-    [Description("Sistema completo de skins com UI visual e imagens")]
+    [Info("Item Skins", "YourName", "1.4.0")]
+    [Description("Sistema completo de skins com menu de seleção de itens")]
     public class ItemSkins : RustPlugin
     {
         #region Plugins Externos
@@ -190,30 +190,8 @@ namespace Oxide.Plugins
                 return;
             }
             
-            var item = player.GetActiveItem();
-            if (item == null)
-            {
-                player.ChatMessage("<color=yellow>Segure um item na mão para aplicar skin!</color>");
-                player.ChatMessage("<color=yellow>Use /skins para ver o menu de skins</color>");
-                return;
-            }
-            
-            if (args.Length == 0)
-            {
-                MostrarUISkinsItem(player, item, 0);
-                return;
-            }
-            
-            // Aplicar skin por ID
-            ulong skinId;
-            if (ulong.TryParse(args[0], out skinId))
-            {
-                AplicarSkin(player, item, skinId);
-            }
-            else
-            {
-                player.ChatMessage("<color=red>ID de skin inválido! Use apenas números.</color>");
-            }
+            // Abrir menu de seleção de itens
+            MostrarMenuItens(player);
         }
         
         [ChatCommand("skins")]
@@ -225,14 +203,8 @@ namespace Oxide.Plugins
                 return;
             }
             
-            var item = player.GetActiveItem();
-            if (item == null)
-            {
-                player.ChatMessage("<color=yellow>Segure um item na mão para ver suas skins!</color>");
-                return;
-            }
-            
-            MostrarUISkinsItem(player, item, 0);
+            // Mesmo que /skin - abre menu de itens
+            MostrarMenuItens(player);
         }
         
         [ChatCommand("skinid")]
@@ -529,18 +501,181 @@ namespace Oxide.Plugins
         
         #region UI
         
-        private void MostrarUISkinsItem(BasePlayer player, Item item, int pagina)
+        private void MostrarMenuItens(BasePlayer player)
         {
-            if (!itemSkins.ContainsKey(item.info.shortname))
+            DestruirUI(player);
+            
+            var container = new CuiElementContainer();
+            
+            // ====== PAINEL PRINCIPAL ======
+            string mainPanel = container.Add(new CuiPanel
             {
-                player.ChatMessage($"<color=red>{item.info.displayName.english} não possui skins disponíveis!</color>");
-                player.ChatMessage($"<color=yellow>Itens disponíveis: AK47, Thompson, LR-300, Hoodie, Calças, Botas, e mais!</color>");
+                Image = { Color = "0.08 0.08 0.08 0.98" },
+                RectTransform = { AnchorMin = "0.2 0.15", AnchorMax = "0.8 0.85" },
+                CursorEnabled = true
+            }, "Overlay", "ItemsMenuPanel");
+            
+            // ====== HEADER ======
+            string headerPanel = container.Add(new CuiPanel
+            {
+                Image = { Color = "0.2 0.4 0.7 1" },
+                RectTransform = { AnchorMin = "0 0.92", AnchorMax = "1 1" }
+            }, mainPanel);
+            
+            container.Add(new CuiLabel
+            {
+                Text = { 
+                    Text = "🎨 SELECIONE O ITEM PARA APLICAR SKIN", 
+                    FontSize = 22, 
+                    Align = TextAnchor.MiddleCenter,
+                    Color = "1 1 1 1"
+                },
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
+            }, headerPanel);
+            
+            // ====== BARRA DE INFORMAÇÕES ======
+            string infoPanel = container.Add(new CuiPanel
+            {
+                Image = { Color = "0.15 0.15 0.15 1" },
+                RectTransform = { AnchorMin = "0 0.87", AnchorMax = "1 0.91" }
+            }, mainPanel);
+            
+            container.Add(new CuiLabel
+            {
+                Text = { 
+                    Text = $"📊 {itemSkins.Count} tipos de itens disponíveis  |  👆 Clique no item para ver as skins", 
+                    FontSize = 14, 
+                    Align = TextAnchor.MiddleCenter,
+                    Color = "0.8 0.9 1 1"
+                },
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
+            }, infoPanel);
+            
+            // ====== GRID DE ITENS ======
+            int columns = 6;
+            float buttonWidth = 0.15f;
+            float buttonHeight = 0.12f;
+            float spacingX = 0.01f;
+            float spacingY = 0.015f;
+            float startX = 0.025f;
+            float startY = 0.84f;
+            
+            int index = 0;
+            foreach (var itemEntry in itemSkins.OrderBy(x => x.Key))
+            {
+                string itemShortname = itemEntry.Key;
+                int skinCount = itemEntry.Value.Count;
+                
+                int row = index / columns;
+                int col = index % columns;
+                
+                float xMin = startX + (col * (buttonWidth + spacingX));
+                float xMax = xMin + buttonWidth;
+                float yMax = startY - (row * (buttonHeight + spacingY));
+                float yMin = yMax - buttonHeight;
+                
+                // Painel do botão
+                string itemButtonPanel = container.Add(new CuiPanel
+                {
+                    Image = { Color = "0.25 0.45 0.75 0.9" },
+                    RectTransform = { AnchorMin = $"{xMin} {yMin}", AnchorMax = $"{xMax} {yMax}" }
+                }, mainPanel);
+                
+                // Imagem do item
+                ItemDefinition itemDef = ItemManager.FindItemDefinition(itemShortname);
+                if (itemDef != null)
+                {
+                    container.Add(new CuiElement
+                    {
+                        Parent = itemButtonPanel,
+                        Components =
+                        {
+                            new CuiRawImageComponent 
+                            { 
+                                Url = $"https://rustlabs.com/img/items180/{itemShortname}.png",
+                                Color = "1 1 1 1"
+                            },
+                            new CuiRectTransformComponent 
+                            { 
+                                AnchorMin = "0.1 0.3", 
+                                AnchorMax = "0.9 0.9" 
+                            }
+                        }
+                    });
+                }
+                
+                // Nome do item
+                string itemName = itemDef != null ? itemDef.displayName.english : itemShortname;
+                container.Add(new CuiLabel
+                {
+                    Text = { 
+                        Text = itemName, 
+                        FontSize = 9, 
+                        Align = TextAnchor.UpperCenter,
+                        Color = "1 1 1 1"
+                    },
+                    RectTransform = { AnchorMin = "0 0.85", AnchorMax = "1 1" }
+                }, itemButtonPanel);
+                
+                // Quantidade de skins
+                container.Add(new CuiLabel
+                {
+                    Text = { 
+                        Text = $"{skinCount} skins", 
+                        FontSize = 10, 
+                        Align = TextAnchor.LowerCenter,
+                        Color = "1 0.9 0 1"
+                    },
+                    RectTransform = { AnchorMin = "0 0", AnchorMax = "1 0.25" }
+                }, itemButtonPanel);
+                
+                // Botão clicável
+                container.Add(new CuiButton
+                {
+                    Button = { Command = $"itemskins.selectitem {itemShortname}", Color = "0 0 0 0" },
+                    RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" },
+                    Text = { Text = "", FontSize = 1 }
+                }, itemButtonPanel);
+                
+                index++;
+            }
+            
+            // ====== FOOTER ======
+            string footerPanel = container.Add(new CuiPanel
+            {
+                Image = { Color = "0.12 0.12 0.12 1" },
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 0.08" }
+            }, mainPanel);
+            
+            // Botão Fechar
+            container.Add(new CuiButton
+            {
+                Button = { Command = "itemskins.close", Color = "0.5 0.5 0.5 1" },
+                RectTransform = { AnchorMin = "0.4 0.15", AnchorMax = "0.6 0.85" },
+                Text = { Text = "❌ FECHAR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
+            }, footerPanel);
+            
+            CuiHelper.AddUi(player, container);
+        }
+        
+        private void MostrarUISkinsItem(BasePlayer player, string itemShortname, int pagina)
+        {
+            if (!itemSkins.ContainsKey(itemShortname))
+            {
+                player.ChatMessage($"<color=red>Este item não possui skins disponíveis!</color>");
                 return;
             }
             
             DestruirUI(player);
             
-            var skins = itemSkins[item.info.shortname];
+            ItemDefinition itemDef = ItemManager.FindItemDefinition(itemShortname);
+            if (itemDef == null)
+            {
+                player.ChatMessage($"<color=red>Item inválido!</color>");
+                return;
+            }
+            
+            var skins = itemSkins[itemShortname];
             var container = new CuiElementContainer();
             
             // ====== PAINEL PRINCIPAL ======
@@ -562,7 +697,7 @@ namespace Oxide.Plugins
             container.Add(new CuiLabel
             {
                 Text = { 
-                    Text = $"🎨 SKINS - {item.info.displayName.english.ToUpper()}", 
+                    Text = $"🎨 SKINS - {itemDef.displayName.english.ToUpper()}", 
                     FontSize = 22, 
                     Align = TextAnchor.MiddleCenter,
                     Color = "1 1 1 1"
@@ -635,7 +770,7 @@ namespace Oxide.Plugins
                 
                 // Imagem da skin (item icon)
                 // Tentar carregar do ImageLibrary ou usar URL direto
-                string imageUrl = GetSkinImageUrl(item.info.shortname, skinId);
+                string imageUrl = GetSkinImageUrl(itemShortname, skinId);
                 
                 if (!string.IsNullOrEmpty(imageUrl))
                 {
@@ -667,7 +802,7 @@ namespace Oxide.Plugins
                         {
                             new CuiRawImageComponent 
                             { 
-                                Url = $"https://rustlabs.com/img/items180/{item.info.shortname}.png",
+                                Url = $"https://rustlabs.com/img/items180/{itemShortname}.png",
                                 Color = "1 1 1 0.5"
                             },
                             new CuiRectTransformComponent 
@@ -682,7 +817,7 @@ namespace Oxide.Plugins
                 // Botão invisível clicável (sobre a imagem)
                 container.Add(new CuiButton
                 {
-                    Button = { Command = $"itemskins.apply {skinId}", Color = "0 0 0 0" },
+                    Button = { Command = $"itemskins.applyskin {itemShortname} {skinId}", Color = "0 0 0 0" },
                     RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" },
                     Text = { Text = "", FontSize = 1, Align = TextAnchor.MiddleCenter }
                 }, skinButtonPanel);
@@ -728,7 +863,7 @@ namespace Oxide.Plugins
             {
                 container.Add(new CuiButton
                 {
-                    Button = { Command = $"itemskins.page {pagina - 1}", Color = "0.3 0.55 0.85 1" },
+                    Button = { Command = $"itemskins.pageitem {itemShortname} {pagina - 1}", Color = "0.3 0.55 0.85 1" },
                     RectTransform = { AnchorMin = "0.02 0.15", AnchorMax = "0.12 0.85" },
                     Text = { Text = "◄ ANTERIOR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
                 }, footerPanel);
@@ -756,11 +891,19 @@ namespace Oxide.Plugins
                 RectTransform = { AnchorMin = "0.14 0.15", AnchorMax = "0.30 0.85" }
             }, footerPanel);
             
+            // Botão: Voltar ao Menu
+            container.Add(new CuiButton
+            {
+                Button = { Command = "itemskins.backmenu", Color = "0.3 0.7 0.4 1" },
+                RectTransform = { AnchorMin = "0.20 0.15", AnchorMax = "0.36 0.85" },
+                Text = { Text = "◄ VOLTAR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
+            }, footerPanel);
+            
             // Botão: Remover Skin
             container.Add(new CuiButton
             {
-                Button = { Command = "itemskins.apply 0", Color = "0.85 0.3 0.3 1" },
-                RectTransform = { AnchorMin = "0.32 0.15", AnchorMax = "0.46 0.85" },
+                Button = { Command = $"itemskins.applyskin {itemShortname} 0", Color = "0.85 0.3 0.3 1" },
+                RectTransform = { AnchorMin = "0.38 0.15", AnchorMax = "0.52 0.85" },
                 Text = { Text = "🗑️ REMOVER", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
             }, footerPanel);
             
@@ -768,7 +911,7 @@ namespace Oxide.Plugins
             container.Add(new CuiButton
             {
                 Button = { Command = "itemskins.close", Color = "0.5 0.5 0.5 1" },
-                RectTransform = { AnchorMin = "0.54 0.15", AnchorMax = "0.68 0.85" },
+                RectTransform = { AnchorMin = "0.64 0.15", AnchorMax = "0.78 0.85" },
                 Text = { Text = "❌ FECHAR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
             }, footerPanel);
             
@@ -777,7 +920,7 @@ namespace Oxide.Plugins
             {
                 container.Add(new CuiButton
                 {
-                    Button = { Command = $"itemskins.page {pagina + 1}", Color = "0.3 0.55 0.85 1" },
+                    Button = { Command = $"itemskins.pageitem {itemShortname} {pagina + 1}", Color = "0.3 0.55 0.85 1" },
                     RectTransform = { AnchorMin = "0.88 0.15", AnchorMax = "0.98 0.85" },
                     Text = { Text = "PRÓXIMA ►", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
                 }, footerPanel);
@@ -828,52 +971,84 @@ namespace Oxide.Plugins
         
         #region Console Commands
         
-        [ConsoleCommand("itemskins.apply")]
-        private void CmdApplySkin(ConsoleSystem.Arg arg)
+        [ConsoleCommand("itemskins.selectitem")]
+        private void CmdSelectItem(ConsoleSystem.Arg arg)
         {
             var player = arg.Player();
             if (player == null) return;
             
             if (arg.Args == null || arg.Args.Length == 0) return;
             
-            ulong skinId;
-            if (!ulong.TryParse(arg.Args[0], out skinId)) return;
+            string itemShortname = arg.Args[0];
+            MostrarUISkinsItem(player, itemShortname, 0);
+        }
+        
+        [ConsoleCommand("itemskins.applyskin")]
+        private void CmdApplySkinToItem(ConsoleSystem.Arg arg)
+        {
+            var player = arg.Player();
+            if (player == null) return;
             
-            var item = player.GetActiveItem();
-            if (item == null)
+            if (arg.Args == null || arg.Args.Length < 2) return;
+            
+            string itemShortname = arg.Args[0];
+            ulong skinId;
+            if (!ulong.TryParse(arg.Args[1], out skinId)) return;
+            
+            // Procurar item no inventário do player
+            Item targetItem = null;
+            foreach (Item item in player.inventory.AllItems())
             {
-                player.ChatMessage("<color=red>Segure o item na mão!</color>");
+                if (item.info.shortname == itemShortname)
+                {
+                    targetItem = item;
+                    break;
+                }
+            }
+            
+            if (targetItem == null)
+            {
+                player.ChatMessage($"<color=red>Você não possui este item no inventário!</color>");
+                player.ChatMessage($"<color=yellow>Pegue o item primeiro e tente novamente.</color>");
                 return;
             }
             
-            AplicarSkin(player, item, skinId);
+            AplicarSkin(player, targetItem, skinId);
             
             // Atualizar UI
             int currentPage = playerCurrentPage.ContainsKey(player.userID) ? playerCurrentPage[player.userID] : 0;
             timer.Once(0.1f, () => {
                 if (player != null && player.IsConnected)
                 {
-                    MostrarUISkinsItem(player, item, currentPage);
+                    MostrarUISkinsItem(player, itemShortname, currentPage);
                 }
             });
         }
         
-        [ConsoleCommand("itemskins.page")]
-        private void CmdChangePage(ConsoleSystem.Arg arg)
+        [ConsoleCommand("itemskins.pageitem")]
+        private void CmdChangePageItem(ConsoleSystem.Arg arg)
         {
             var player = arg.Player();
             if (player == null) return;
             
-            if (arg.Args == null || arg.Args.Length == 0) return;
+            if (arg.Args == null || arg.Args.Length < 2) return;
             
+            string itemShortname = arg.Args[0];
             int pagina;
-            if (!int.TryParse(arg.Args[0], out pagina)) return;
+            if (!int.TryParse(arg.Args[1], out pagina)) return;
             
-            var item = player.GetActiveItem();
-            if (item == null) return;
-            
-            MostrarUISkinsItem(player, item, pagina);
+            MostrarUISkinsItem(player, itemShortname, pagina);
         }
+        
+        [ConsoleCommand("itemskins.backmenu")]
+        private void CmdBackMenu(ConsoleSystem.Arg arg)
+        {
+            var player = arg.Player();
+            if (player == null) return;
+            
+            MostrarMenuItens(player);
+        }
+        
         
         [ConsoleCommand("itemskins.fav")]
         private void CmdToggleFav(ConsoleSystem.Arg arg)

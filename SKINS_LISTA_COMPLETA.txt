@@ -1,0 +1,143 @@
+═══════════════════════════════════════════════════════════════
+  ✅ PLUGIN ATUALIZADO COM SUAS SKINS PERSONALIZADAS!
+═══════════════════════════════════════════════════════════════
+
+ITENS COM SKINS CARREGADOS:
+---------------------------
+
+✅ shoes.boots          - 344 skins
+✅ coffeecan.helmet     - 286 skins  
+✅ metal.plate.torso    - 517 skins (colete)
+✅ metal.facemask       - 480 skins
+✅ hoodie               - 673 skins
+✅ pants                - 580 skins (calças)
+✅ roadsign.gloves      - 89 skins
+✅ roadsign.kilt        - 268 skins
+✅ roadsign.jacket      - 256 skins
+✅ shotgun.double       - 107 skins
+✅ rifle.ak             - 690 skins
+✅ lmg.m249             - 139 skins
+✅ box.wooden           - 262 skins (caixa de madeira)
+✅ fridge               - 148 skins (geladeira)
+✅ wall.frame.garagedoor - 465 skins (portão de garagem)
+✅ rifle.semiauto       - 234 skins
+✅ door.double.hinged.toptier - 66 skins (porta blindada dupla)
+✅ rifle.l96            - 117 skins
+✅ mask.balaclava       - 97 skins
+✅ burlap.shirt         - 180 skins
+✅ burlap.trousers      - 192 skins (calça de pano)
+✅ attire.hide.poncho   - 92 skins
+✅ hat.boonie           - 104 skins
+✅ sleepingbag          - 241 skins
+✅ door.double.hinged.metal - 237 skins
+✅ door.hinged.toptier  - 61 skins
+✅ hammer               - 173 skins
+✅ rock                 - 218 skins (pedra)
+✅ salvaged.sword       - 86 skins
+✅ bow.hunting          - 142 skins (arco)
+✅ pistol.eoka          - 54 skins
+✅ pistol.python        - 210 skins
+✅ pistol.semiauto      - 170 skins
+✅ smg.thompson         - 244 skins
+✅ smg.2                - 113 skins (Custom SMG)
+✅ smg.mp5              - 128 skins
+✅ rifle.lr300          - 511 skins
+✅ rifle.m39            - 59 skins
+✅ rocket.launcher      - 194 skins
+✅ target.reactive      - 34 skins (alvo reativo)
+✅ vending.machine      - 94 skins (máquina de venda)
+✅ barricade.concrete   - 53 skins
+✅ knife.bone           - 37 skins
+✅ hatchet              - 190 skins (machado)
+✅ pickaxe              - 132 skins (picareta)
+✅ jackhammer           - 71 skins
+✅ hat.miner            - 61 skins
+✅ burlap.gloves        - 210 skins
+✅ stonehatchet         - 83 skins (machado de pedra)
+✅ stone.pickaxe        - 56 skins (picareta de pedra)
+✅ longsword            - 42 skins
+✅ table                - 118 skins (mesa)
+✅ deer.skull.mask      - 45 skins
+✅ bucket.helmet        - 68 skins
+✅ pistol.revolver      - 104 skins
+✅ explosive.satchel    - 84 skins (C4 satchel)
+✅ crossbow             - 151 skins
+✅ rifle.bolt           - 144 skins
+✅ furnace              - 283 skins (fornalha)
+✅ locker               - 405 skins
+✅ rug                  - 401 skins (tapete)
+✅ door.hinged.wood     - 321 skins (porta de madeira)
+✅ door.hinged.metal    - 355 skins (porta de metal)
+✅ door.double.hinged.metal - 247 skins (porta dupla metal)
+✅ grenade.f1           - 48 skins
+✅ knife.combat         - 110 skins
+✅ hat.cap              - 124 skins (boné)
+✅ jacket               - 145 skins
+✅ jacket.snow          - 70 skins
+✅ burlap.shoes         - 51 skins
+✅ riot.helmet          - 88 skins
+✅ icepick.salvaged     - 51 skins
+✅ shirt.collared       - 82 skins
+✅ bone.club            - 34 skins
+✅ tshirt.long          - 56 skins
+✅ shotgun.waterpipe    - 49 skins
+✅ hat.beenie           - 59 skins
+✅ water.purifier       - 21 skins
+✅ fun.guitar           - 25 skins (guitarra)
+✅ shirt.tanktop        - 49 skins
+✅ rug.bear             - 78 skins (tapete de urso)
+✅ hammer.salvaged      - 12 skins
+✅ pants.shorts         - 51 skins (shorts)
+✅ barricade.sandbags   - 19 skins
+
+═══════════════════════════════════════════════════════════════
+
+TOTAL: ~10,000+ SKINS DISPONÍVEIS!
+
+═══════════════════════════════════════════════════════════════
+
+MUDANÇAS NA VERSÃO 1.1.0:
+--------------------------
+
+✅ Skins carregadas do seu arquivo personalizado
+✅ Sistema de paginação (48 skins por página)
+✅ Botões < e > para navegar entre páginas
+✅ Todas as skins funcionando sem erros
+✅ Compatível com Protocol 2388.237.1
+✅ Zero erros de compilação
+
+═══════════════════════════════════════════════════════════════
+
+COMO USAR:
+----------
+
+1. Copie ItemSkins.cs para oxide/plugins/
+2. Recarregue: oxide.reload ItemSkins
+3. Entre no servidor
+4. Pegue uma AK47
+5. Digite /skin
+6. VEJA TODAS AS 690+ SKINS DA AK! 🎉
+
+═══════════════════════════════════════════════════════════════
+
+NOVOS RECURSOS:
+---------------
+
+✅ Paginação automática
+   - 48 skins por página
+   - Botões < e > para navegar
+   - Mostra "Página X de Y"
+
+✅ Lista completa de skins
+   - Carregadas diretamente no código
+   - Sem erros de API
+   - 100% funcional
+
+✅ Suporte a TODOS os itens populares
+   - Armas (AK, LR, Thompson, MP5, etc)
+   - Roupas (Hoodie, Pants, Boots, etc)
+   - Portas (Madeira, Metal, Blindadas)
+   - Construção (Caixas, Sleeping Bags, etc)
+   - E muito mais!
+
+═══════════════════════════════════════════════════════════════

@@ -9,8 +9,8 @@ using Newtonsoft.Json;
 
 namespace Oxide.Plugins
 {
-    [Info("Item Skins", "YourName", "1.1.0")]
-    [Description("Sistema completo de skins para todos os itens do Rust")]
+    [Info("Item Skins", "YourName", "1.2.0")]
+    [Description("Sistema completo de skins com UI moderna em Grid Horizontal")]
     public class ItemSkins : RustPlugin
     {
         #region Configuração
@@ -536,93 +536,67 @@ namespace Oxide.Plugins
             var skins = itemSkins[item.info.shortname];
             var container = new CuiElementContainer();
             
-            // Painel principal
+            // ====== PAINEL PRINCIPAL ======
             string mainPanel = container.Add(new CuiPanel
             {
-                Image = { Color = configData.CorUI },
-                RectTransform = { AnchorMin = "0.2 0.15", AnchorMax = "0.8 0.85" },
+                Image = { Color = "0.08 0.08 0.08 0.98" },
+                RectTransform = { AnchorMin = "0.15 0.1", AnchorMax = "0.85 0.9" },
                 CursorEnabled = true
             }, "Overlay", "SkinsPanel");
             
-            // Título
-            container.Add(new CuiLabel
+            // ====== HEADER (BARRA SUPERIOR) ======
+            string headerPanel = container.Add(new CuiPanel
             {
-                Text = { 
-                    Text = $"SKINS - {item.info.displayName.english.ToUpper()}", 
-                    FontSize = 20, 
-                    Align = TextAnchor.MiddleCenter,
-                    Color = "1 1 1 1"
-                },
+                Image = { Color = "0.2 0.4 0.7 1" },
                 RectTransform = { AnchorMin = "0 0.92", AnchorMax = "1 1" }
             }, mainPanel);
             
+            // Título no header
+            container.Add(new CuiLabel
+            {
+                Text = { 
+                    Text = $"🎨 SKINS - {item.info.displayName.english.ToUpper()}", 
+                    FontSize = 22, 
+                    Align = TextAnchor.MiddleCenter,
+                    Color = "1 1 1 1"
+                },
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
+            }, headerPanel);
+            
+            // ====== BARRA DE INFORMAÇÕES ======
             // Calcular paginação
             int skinsPerPage = configData.SkinsPorPagina;
             int totalPaginas = Mathf.CeilToInt((float)skins.Count / skinsPerPage);
             pagina = Mathf.Clamp(pagina, 0, totalPaginas - 1);
             
-            // Salvar página atual
             playerCurrentPage[player.userID] = pagina;
             
-            // Info com paginação
+            string infoPanel = container.Add(new CuiPanel
+            {
+                Image = { Color = "0.15 0.15 0.15 1" },
+                RectTransform = { AnchorMin = "0 0.87", AnchorMax = "1 0.91" }
+            }, mainPanel);
+            
             container.Add(new CuiLabel
             {
                 Text = { 
-                    Text = $"{skins.Count} skins disponíveis | Página {pagina + 1}/{totalPaginas} | Clique para aplicar", 
-                    FontSize = 12, 
+                    Text = $"📊 {skins.Count} skins disponíveis  |  📄 Página {pagina + 1}/{totalPaginas}  |  👆 Clique para aplicar", 
+                    FontSize = 14, 
                     Align = TextAnchor.MiddleCenter,
-                    Color = "0.8 0.8 0.8 1"
+                    Color = "0.8 0.9 1 1"
                 },
-                RectTransform = { AnchorMin = "0 0.88", AnchorMax = "1 0.92" }
-            }, mainPanel);
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
+            }, infoPanel);
             
-            // Botão página anterior
-            if (pagina > 0)
-            {
-                container.Add(new CuiButton
-                {
-                    Button = { Command = $"itemskins.page {pagina - 1}", Color = "0.3 0.5 0.8 1" },
-                    RectTransform = { AnchorMin = "0.02 0.02", AnchorMax = "0.10 0.08" },
-                    Text = { Text = "<", FontSize = 20, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
-                }, mainPanel);
-            }
-            
-            // Botão próxima página
-            if (pagina < totalPaginas - 1)
-            {
-                container.Add(new CuiButton
-                {
-                    Button = { Command = $"itemskins.page {pagina + 1}", Color = "0.3 0.5 0.8 1" },
-                    RectTransform = { AnchorMin = "0.90 0.02", AnchorMax = "0.98 0.08" },
-                    Text = { Text = ">", FontSize = 20, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
-                }, mainPanel);
-            }
-            
-            // Botão remover skin
-            container.Add(new CuiButton
-            {
-                Button = { Command = "itemskins.apply 0", Color = "0.8 0.2 0.2 1" },
-                RectTransform = { AnchorMin = "0.12 0.02", AnchorMax = "0.25 0.08" },
-                Text = { Text = "Remover Skin", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
-            }, mainPanel);
-            
-            // Botão fechar
-            container.Add(new CuiButton
-            {
-                Button = { Command = "itemskins.close", Color = "0.5 0.5 0.5 1" },
-                RectTransform = { AnchorMin = "0.75 0.02", AnchorMax = "0.88 0.08" },
-                Text = { Text = "Fechar", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
-            }, mainPanel);
-            
-            // Grid de skins
-            int columns = 6;
-            int rows = 8;
-            float buttonWidth = 0.15f;
-            float buttonHeight = 0.09f;
-            float spacingX = 0.01f;
-            float spacingY = 0.01f;
+            // ====== ÁREA DE SKINS (GRID HORIZONTAL) ======
+            int columns = 8;  // 8 colunas
+            int rows = 6;     // 6 linhas
+            float buttonWidth = 0.115f;
+            float buttonHeight = 0.115f;
+            float spacingX = 0.008f;
+            float spacingY = 0.012f;
             float startX = 0.02f;
-            float startY = 0.78f;
+            float startY = 0.84f;
             
             int startIndex = pagina * skinsPerPage;
             int endIndex = Math.Min(startIndex + skinsPerPage, skins.Count);
@@ -642,32 +616,111 @@ namespace Oxide.Plugins
                 bool isFavorito = playerData.ContainsKey(player.userID) && 
                                  playerData[player.userID].Favoritos.Contains(skinId);
                 
-                string buttonColor = isFavorito ? "0.8 0.6 0.2 1" : "0.3 0.3 0.3 1";
+                // Cores: Azul para skins normais, Dourado para favoritos
+                string buttonColor = isFavorito ? "0.9 0.7 0.2 1" : "0.25 0.45 0.75 0.9";
                 
+                // Botão da skin
                 container.Add(new CuiButton
                 {
                     Button = { Command = $"itemskins.apply {skinId}", Color = buttonColor },
                     RectTransform = { AnchorMin = $"{xMin} {yMin}", AnchorMax = $"{xMax} {yMax}" },
                     Text = { 
                         Text = configData.MostrarIDs ? $"{skinId}" : $"Skin {relativeIndex+1}", 
-                        FontSize = 9, 
+                        FontSize = 10, 
                         Align = TextAnchor.MiddleCenter,
                         Color = "1 1 1 1"
                     }
                 }, mainPanel);
                 
-                // Botão favorito (estrela)
+                // Estrela de favorito (canto superior direito do botão)
                 container.Add(new CuiButton
                 {
-                    Button = { Command = $"itemskins.fav {skinId}", Color = "0 0 0 0" },
-                    RectTransform = { AnchorMin = $"{xMin} {yMax - 0.02f}", AnchorMax = $"{xMin + 0.02f} {yMax}" },
+                    Button = { Command = $"itemskins.fav {skinId}", Color = "0 0 0 0.7" },
+                    RectTransform = { AnchorMin = $"{xMax - 0.018f} {yMax - 0.018f}", AnchorMax = $"{xMax} {yMax}" },
                     Text = { 
                         Text = isFavorito ? "★" : "☆", 
-                        FontSize = 14, 
+                        FontSize = 16, 
                         Align = TextAnchor.MiddleCenter,
-                        Color = isFavorito ? "1 0.8 0 1" : "0.5 0.5 0.5 1"
+                        Color = isFavorito ? "1 0.9 0 1" : "0.6 0.6 0.6 1"
                     }
                 }, mainPanel);
+            }
+            
+            // ====== FOOTER (BARRA INFERIOR COM BOTÕES) ======
+            string footerPanel = container.Add(new CuiPanel
+            {
+                Image = { Color = "0.12 0.12 0.12 1" },
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 0.08" }
+            }, mainPanel);
+            
+            // Botão: Página Anterior
+            if (pagina > 0)
+            {
+                container.Add(new CuiButton
+                {
+                    Button = { Command = $"itemskins.page {pagina - 1}", Color = "0.3 0.55 0.85 1" },
+                    RectTransform = { AnchorMin = "0.02 0.15", AnchorMax = "0.12 0.85" },
+                    Text = { Text = "◄ ANTERIOR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
+                }, footerPanel);
+            }
+            else
+            {
+                // Botão desabilitado
+                container.Add(new CuiButton
+                {
+                    Button = { Command = "", Color = "0.2 0.2 0.2 0.5" },
+                    RectTransform = { AnchorMin = "0.02 0.15", AnchorMax = "0.12 0.85" },
+                    Text = { Text = "◄ ANTERIOR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "0.4 0.4 0.4 1" }
+                }, footerPanel);
+            }
+            
+            // Label: Página Atual
+            container.Add(new CuiLabel
+            {
+                Text = { 
+                    Text = $"Página {pagina + 1}/{totalPaginas}", 
+                    FontSize = 16, 
+                    Align = TextAnchor.MiddleCenter,
+                    Color = "0.8 0.9 1 1"
+                },
+                RectTransform = { AnchorMin = "0.14 0.15", AnchorMax = "0.30 0.85" }
+            }, footerPanel);
+            
+            // Botão: Remover Skin
+            container.Add(new CuiButton
+            {
+                Button = { Command = "itemskins.apply 0", Color = "0.85 0.3 0.3 1" },
+                RectTransform = { AnchorMin = "0.32 0.15", AnchorMax = "0.46 0.85" },
+                Text = { Text = "🗑️ REMOVER", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
+            }, footerPanel);
+            
+            // Botão: Fechar
+            container.Add(new CuiButton
+            {
+                Button = { Command = "itemskins.close", Color = "0.5 0.5 0.5 1" },
+                RectTransform = { AnchorMin = "0.54 0.15", AnchorMax = "0.68 0.85" },
+                Text = { Text = "❌ FECHAR", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
+            }, footerPanel);
+            
+            // Botão: Próxima Página
+            if (pagina < totalPaginas - 1)
+            {
+                container.Add(new CuiButton
+                {
+                    Button = { Command = $"itemskins.page {pagina + 1}", Color = "0.3 0.55 0.85 1" },
+                    RectTransform = { AnchorMin = "0.88 0.15", AnchorMax = "0.98 0.85" },
+                    Text = { Text = "PRÓXIMA ►", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "1 1 1 1" }
+                }, footerPanel);
+            }
+            else
+            {
+                // Botão desabilitado
+                container.Add(new CuiButton
+                {
+                    Button = { Command = "", Color = "0.2 0.2 0.2 0.5" },
+                    RectTransform = { AnchorMin = "0.88 0.15", AnchorMax = "0.98 0.85" },
+                    Text = { Text = "PRÓXIMA ►", FontSize = 14, Align = TextAnchor.MiddleCenter, Color = "0.4 0.4 0.4 1" }
+                }, footerPanel);
             }
             
             CuiHelper.AddUi(player, container);

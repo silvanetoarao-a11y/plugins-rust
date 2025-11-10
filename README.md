@@ -2,13 +2,15 @@
 
 Plugin completo de gerenciamento de skins para **Rust Protocol 2388.237.1** (Maio/2023)
 
-## ✨ Versão 1.2.0 - UI REFORMATADA! 🎨
+## ✨ Versão 1.3.0 - IMAGENS VISUAIS! 🖼️
 
-✅ **Nova UI Grid Horizontal (8x6)** - Visual moderno e profissional  
+✅ **🎨 IMAGENS DAS SKINS** - Veja a skin antes de aplicar!  
+✅ **Grid 8x6 com imagens** - 48 skins visuais por página  
+✅ **Integração ImageLibrary** - Performance otimizada (opcional)  
+✅ **Sistema de fallback** - Funciona com ou sem ImageLibrary  
 ✅ **Header e Footer destacados** - Navegação intuitiva  
 ✅ **Cores vibrantes** - Azul para skins, Dourado para favoritos  
 ✅ **+10.000 skins carregadas** diretamente no plugin  
-✅ **Sistema de paginação** - Navegue entre centenas de skins facilmente  
 ✅ **Zero erros** - Todas as skins testadas e funcionando  
 ✅ **100% compatível** com seu servidor (Protocol 2388.237.1)
 

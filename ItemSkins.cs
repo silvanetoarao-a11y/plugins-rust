@@ -9,10 +9,17 @@ using Newtonsoft.Json;
 
 namespace Oxide.Plugins
 {
-    [Info("Item Skins", "YourName", "1.2.0")]
-    [Description("Sistema completo de skins com UI moderna em Grid Horizontal")]
+    [Info("Item Skins", "YourName", "1.3.0")]
+    [Description("Sistema completo de skins com UI visual e imagens")]
     public class ItemSkins : RustPlugin
     {
+        #region Plugins Externos
+        
+        [PluginReference]
+        private Plugin ImageLibrary;
+        
+        #endregion
+        
         #region Configuração
         
         private ConfigData configData;
@@ -619,31 +626,94 @@ namespace Oxide.Plugins
                 // Cores: Azul para skins normais, Dourado para favoritos
                 string buttonColor = isFavorito ? "0.9 0.7 0.2 1" : "0.25 0.45 0.75 0.9";
                 
-                // Botão da skin
+                // Painel de fundo do botão
+                string skinButtonPanel = container.Add(new CuiPanel
+                {
+                    Image = { Color = buttonColor },
+                    RectTransform = { AnchorMin = $"{xMin} {yMin}", AnchorMax = $"{xMax} {yMax}" }
+                }, mainPanel);
+                
+                // Imagem da skin (item icon)
+                // Tentar carregar do ImageLibrary ou usar URL direto
+                string imageUrl = GetSkinImageUrl(item.info.shortname, skinId);
+                
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    container.Add(new CuiElement
+                    {
+                        Parent = skinButtonPanel,
+                        Components =
+                        {
+                            new CuiRawImageComponent 
+                            { 
+                                Url = imageUrl,
+                                Color = "1 1 1 1"
+                            },
+                            new CuiRectTransformComponent 
+                            { 
+                                AnchorMin = "0.1 0.2", 
+                                AnchorMax = "0.9 0.95" 
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    // Fallback: Mostrar ícone do item sem skin
+                    container.Add(new CuiElement
+                    {
+                        Parent = skinButtonPanel,
+                        Components =
+                        {
+                            new CuiRawImageComponent 
+                            { 
+                                Url = $"https://rustlabs.com/img/items180/{item.info.shortname}.png",
+                                Color = "1 1 1 0.5"
+                            },
+                            new CuiRectTransformComponent 
+                            { 
+                                AnchorMin = "0.1 0.2", 
+                                AnchorMax = "0.9 0.95" 
+                            }
+                        }
+                    });
+                }
+                
+                // Botão invisível clicável (sobre a imagem)
                 container.Add(new CuiButton
                 {
-                    Button = { Command = $"itemskins.apply {skinId}", Color = buttonColor },
-                    RectTransform = { AnchorMin = $"{xMin} {yMin}", AnchorMax = $"{xMax} {yMax}" },
-                    Text = { 
-                        Text = configData.MostrarIDs ? $"{skinId}" : $"Skin {relativeIndex+1}", 
-                        FontSize = 10, 
-                        Align = TextAnchor.MiddleCenter,
-                        Color = "1 1 1 1"
-                    }
-                }, mainPanel);
+                    Button = { Command = $"itemskins.apply {skinId}", Color = "0 0 0 0" },
+                    RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" },
+                    Text = { Text = "", FontSize = 1, Align = TextAnchor.MiddleCenter }
+                }, skinButtonPanel);
+                
+                // Label com ID na parte inferior (opcional)
+                if (configData.MostrarIDs)
+                {
+                    container.Add(new CuiLabel
+                    {
+                        Text = { 
+                            Text = $"{skinId}", 
+                            FontSize = 8, 
+                            Align = TextAnchor.LowerCenter,
+                            Color = "0 0 0 0.8"
+                        },
+                        RectTransform = { AnchorMin = "0 0", AnchorMax = "1 0.18" }
+                    }, skinButtonPanel);
+                }
                 
                 // Estrela de favorito (canto superior direito do botão)
                 container.Add(new CuiButton
                 {
-                    Button = { Command = $"itemskins.fav {skinId}", Color = "0 0 0 0.7" },
-                    RectTransform = { AnchorMin = $"{xMax - 0.018f} {yMax - 0.018f}", AnchorMax = $"{xMax} {yMax}" },
+                    Button = { Command = $"itemskins.fav {skinId}", Color = "0 0 0 0.8" },
+                    RectTransform = { AnchorMin = "0.75 0.75", AnchorMax = "1 1" },
                     Text = { 
                         Text = isFavorito ? "★" : "☆", 
-                        FontSize = 16, 
+                        FontSize = 18, 
                         Align = TextAnchor.MiddleCenter,
-                        Color = isFavorito ? "1 0.9 0 1" : "0.6 0.6 0.6 1"
+                        Color = isFavorito ? "1 0.9 0 1" : "0.8 0.8 0.8 1"
                     }
-                }, mainPanel);
+                }, skinButtonPanel);
             }
             
             // ====== FOOTER (BARRA INFERIOR COM BOTÕES) ======
@@ -729,6 +799,29 @@ namespace Oxide.Plugins
         private void DestruirUI(BasePlayer player)
         {
             CuiHelper.DestroyUi(player, "SkinsPanel");
+        }
+        
+        private string GetSkinImageUrl(string itemShortname, ulong skinId)
+        {
+            // Se ImageLibrary estiver disponível, tentar pegar do cache
+            if (ImageLibrary != null && ImageLibrary.IsLoaded)
+            {
+                string cachedImage = (string)ImageLibrary.Call("GetImage", itemShortname, skinId);
+                if (!string.IsNullOrEmpty(cachedImage))
+                {
+                    return cachedImage;
+                }
+            }
+            
+            // Fallback: Usar URL direto da Steam Workshop
+            if (skinId > 0)
+            {
+                // URL do item da Steam Workshop
+                return $"https://files.facepunch.com/umod/workshopicons/{skinId}.png";
+            }
+            
+            // Se não tem skin, retornar null para usar o ícone padrão
+            return null;
         }
         
         #endregion

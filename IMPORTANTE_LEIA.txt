@@ -1,0 +1,41 @@
+═══════════════════════════════════════════════════════════════
+  ⚠️  IMPORTANTE - VOCÊ ESTÁ USANDO OS ARQUIVOS ERRADOS!
+═══════════════════════════════════════════════════════════════
+
+O PROBLEMA:
+-----------
+Os arquivos que eu corrigi estão NESTE workspace.
+Você ainda está usando os arquivos ANTIGOS no seu servidor!
+
+OS ARQUIVOS CORRIGIDOS ESTÃO AQUI:
+-----------------------------------
+✅ /workspace/PvPTraining.cs    (CORRIGIDO)
+✅ /workspace/BuildTraining.cs  (CORRIGIDO)
+
+O QUE VOCÊ PRECISA FAZER:
+--------------------------
+
+PASSO 1: Baixar os arquivos corrigidos
+   - PvPTraining.cs (deste workspace)
+   - BuildTraining.cs (deste workspace)
+
+PASSO 2: Deletar os arquivos antigos do servidor
+   - Delete: oxide/plugins/PvPTraining.cs (ANTIGO)
+   - Delete: oxide/plugins/BuildTraining.cs (ANTIGO)
+
+PASSO 3: Fazer upload dos arquivos corrigidos
+   - Faça upload dos arquivos DESTE workspace
+   - Para: oxide/plugins/
+
+PASSO 4: Recarregar
+   oxide.reload PvPTraining
+   oxide.reload BuildTraining
+
+═══════════════════════════════════════════════════════════════
+
+SE VOCÊ NÃO PODE BAIXAR OS ARQUIVOS:
+-------------------------------------
+
+Cole TODO o conteúdo dos arquivos aqui abaixo no seu servidor:
+
+═══════════════════════════════════════════════════════════════

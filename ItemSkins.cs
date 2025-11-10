@@ -436,15 +436,19 @@ namespace Oxide.Plugins
             }
             
             // Adicionar skins aprovadas do Workshop
-            var workshopSkins = Rust.Workshop.Approved.All
-                .Where(skin => skin.Skinnable?.ItemName == itemDef.shortname)
-                .Select(skin => skin.WorkskinId);
-            
-            foreach (var skinId in workshopSkins)
+            foreach (var workshopSkin in Rust.Workshop.Approved.All)
             {
-                if (skinId != 0 && !skins.Contains(skinId))
+                var skinInfo = workshopSkin.Value;
+                if (skinInfo != null && skinInfo.Skinnable != null)
                 {
-                    skins.Add(skinId);
+                    if (skinInfo.Skinnable.ItemName == itemDef.shortname)
+                    {
+                        ulong skinId = workshopSkin.Key;
+                        if (skinId != 0 && !skins.Contains(skinId))
+                        {
+                            skins.Add(skinId);
+                        }
+                    }
                 }
             }
             

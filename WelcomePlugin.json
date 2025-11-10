@@ -1,0 +1,8 @@
+{
+  "Mensagem de boas-vindas": "Bem-vindo ao servidor, {player}! Divirta-se!",
+  "Mostrar mensagem no chat": true,
+  "Mostrar popup na tela": true,
+  "Tempo do popup (segundos)": 5.0,
+  "Prefix do chat": "[Servidor]",
+  "Cor do prefix (hex)": "#00FF00"
+}
